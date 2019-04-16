@@ -2,13 +2,13 @@
 
 This project demonstrates how to create a simple REST api using:
 - GraalVM (Java 8)
-- RESTeasy
+- RESTEasy
 - json-b serialization
 - Bean Validation (JSR 303) 
-- [TODO] JPA (Hibernate)
+- JPA (Hibernate)
 - [TODO] Basic authentication
-- [TODO] docker + docker-compose
-- [TODO] native library
+- docker + docker-compose
+- native image
 
 ## Setup
 
@@ -22,6 +22,41 @@ Set the following environment variables
     export JAVA_HOME=$GRAALVM_HOME
     export PATH=$JAVA_HOME/bin:$PATH
 
+## Running
+
+Start with hot deployment active (edit + save + reload):
+
+    mvn compile quarkus:dev
+
+Generate jar package:
+
+    $ mvn clean package
+    $ java -jar employee-api-1.0-SNAPSHOT-runner.jar
+    ...
+    INFO: Quarkus 0.13.1 started in 1.655s. Listening on: http://[::]:8080
+    INFO: Installed features: [agroal, cdi, hibernate-orm, hibernate-validator, jdbc-mariadb, narayana-jta, resteasy, resteasy-jsonb]
+
+Generate native image (it might take a few minutes):
+
+    mvn package -Pnative
+
+Check `target` directory:
+
+    $ ls -lh target
+    -rwxr-xr-x 1 bruno bruno  51M Apr 15 21:51 employee-api-1.0-SNAPSHOT-runner
+
+Running native image:
+
+    $ ./target/employee-api-1.0-SNAPSHOT-runner
+    INFO  [io.quarkus] (main) Quarkus 0.13.2 started in 0.028s. Listening on: http://[::]:8080
+    INFO  [io.quarkus] (main) Installed features: [agroal, cdi, hibernate-orm, hibernate-validator, jdbc-mariadb, narayana-jta, resteasy, resteasy-jsonb]
+
+Impressive starting time: **0.028s**
+
+## docker-compose
+
+    $ mvn clean package -Pnative -Dnative-image.docker-build=true
+    $ docker-compose up --build
 
 ## REST operations using curl
 

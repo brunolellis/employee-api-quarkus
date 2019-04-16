@@ -38,16 +38,16 @@ public class EmployeesResource extends AbstractRestApi {
 	}
 
 	@GET
-	public Response findAll() {
+	public List<EmployeeResponse> findAll() {
 		final List<EmployeeResponse> response = apiHandler.findAllEmployees();
-		return Response.ok(response).build();
+		return response;
 	}
 
 	@POST
 	public Response create(@Valid final EmployeeRequest newEmployee, @Context UriInfo uriInfo) {
 		final EmployeeResponse response = apiHandler.create(newEmployee);
 		
-		URI uriPathLocation = getUriPathLocation(uriInfo, response.getId());
+		URI uriPathLocation = getUriPathLocation(uriInfo, response.getId().toString());
 		return Response.created(uriPathLocation)
 			.entity(response)
 			.build();
@@ -55,14 +55,14 @@ public class EmployeesResource extends AbstractRestApi {
 
 	@GET
 	@Path("/{id}")
-	public Response findById(@PathParam("id") final String id) {
+	public EmployeeResponse findById(@PathParam("id") final Long id) {
 		final EmployeeResponse response = apiHandler.findEmployeeById(id);
-		return Response.ok(response).build();
+		return response;
 	}
 
 	@PUT
 	@Path("/{id}")
-	public Response update(@PathParam("id") final String id, @Valid final EmployeeRequest employee) {
+	public Response update(@PathParam("id") final Long id, @Valid final EmployeeRequest employee) {
 		apiHandler.update(id, employee);
 		return Response.noContent().build();
 	}
@@ -70,7 +70,7 @@ public class EmployeesResource extends AbstractRestApi {
 	@DELETE
 	@Path("/{id}")
 	//@RolesAllowed("ADMIN")
-	public Response delete(@PathParam("id") final String id) {
+	public Response delete(@PathParam("id") final Long id) {
 		apiHandler.delete(id);
 		return Response.noContent().build();
 	}

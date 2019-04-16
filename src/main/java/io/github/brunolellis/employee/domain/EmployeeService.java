@@ -1,14 +1,17 @@
 package io.github.brunolellis.employee.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.github.brunolellis.employee.exception.EmployeeNotFoundException;
 import io.github.brunolellis.employee.repository.EmployeeRepository;
 
 @ApplicationScoped
+@Transactional
 public class EmployeeService {
 
 	private final EmployeeRepository repository;
@@ -27,15 +30,17 @@ public class EmployeeService {
 	 * 
 	 * @param id
 	 * @return
-	 * @throws EmployeeNotFoundException in case it does not exist (or maybe because it was previously disabled) 
+	 * @throws EmployeeNotFoundException in case it does not exist (or maybe because
+	 *                                   it was previously disabled)
 	 */
-	public Employee findById(final String id) throws EmployeeNotFoundException {
-		return repository.findByIdAndStatus(id, EmployeeStatus.ACTIVE)
-				.orElseThrow(() -> new EmployeeNotFoundException(id));
+	public Employee findById(final Long id) throws EmployeeNotFoundException {
+		Optional<Employee> e = repository.findByIdAndStatus(id, EmployeeStatus.ACTIVE);
+		return e.orElseThrow(() -> new EmployeeNotFoundException(id));
 	}
 
 	public List<Employee> findAll() {
-		return repository.findAllByStatus(EmployeeStatus.ACTIVE);
+		List<Employee> e = repository.findAllByStatus(EmployeeStatus.ACTIVE);
+		return e;
 	}
 
 	/**
@@ -45,7 +50,7 @@ public class EmployeeService {
 	 * @throws EmployeeNotFoundException
 	 */
 //////////////////////////////////////////////////////////////////////// @Transactional(readOnly = false)
-	public void delete(final String id) throws EmployeeNotFoundException {
+	public void delete(final Long id) throws EmployeeNotFoundException {
 		final Employee employee = findById(id);
 
 		employee.disable();
@@ -73,9 +78,9 @@ public class EmployeeService {
 	 * @throws EmployeeNotFoundException
 	 */
 //////////////////////////////////////////////////////////////////////// @Transactional(readOnly = false)
-	public void update(final String id, final Employee employee) throws EmployeeNotFoundException {
+	public void update(final Long id, final Employee employee) throws EmployeeNotFoundException {
 		final Employee updatingEmployee = findById(id);
-		
+
 		employee.setId(updatingEmployee.getId());
 		employee.enable();
 		repository.save(employee);

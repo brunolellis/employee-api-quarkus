@@ -1,51 +1,53 @@
 package io.github.brunolellis.employee.repository;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import io.github.brunolellis.employee.domain.Employee;
 import io.github.brunolellis.employee.domain.EmployeeStatus;
 
 @ApplicationScoped
+@Transactional
 public class EmployeeRepository {
 
-    private Map<String, Employee> employees = new ConcurrentHashMap<>();
+    private EntityManager em;
 
-    public EmployeeRepository() {
-        Employee e = new Employee.Builder()
-            .dateOfBirth(LocalDate.now())
-            .dateOfEmployment(LocalDate.now())
-            .firstName("First")
-            .lastName("Last")
-            .middleInitial("M")
-            .build()
-            .generateNewId();
-        this.employees.put(e.getId(), e);
+    EmployeeRepository() {
     }
 
-	public Optional<Employee> findByIdAndStatus(String id, EmployeeStatus active) {
-        Employee employee = employees.get(id);
+    @Inject
+    public EmployeeRepository(EntityManager em) {
+        this.em = em;
+    }
+
+    public Optional<Employee> findByIdAndStatus(Long id, EmployeeStatus active) {
+        Employee employee = em.find(Employee.class, id);
 
         if (employee == null || employee.isInactive()) {
             return Optional.empty();
         }
 
-		return Optional.of(employee);
-	}
+        return Optional.of(employee);
+    }
 
-	public List<Employee> findAllByStatus(EmployeeStatus active) {
-		return new ArrayList<>(employees.values());
+    public List<Employee> findAllByStatus(EmployeeStatus status) {
+        List<Employee> employees = (List<Employee>) em.createQuery("SELECT e FROM Employee e WHERE e.status = :status")
+                        .setParameter("status", status)
+                        .getResultList();
+        return employees;
 	}
 
 	public Employee save(Employee employee) {
-        employee.generateNewId();
-        employees.put(employee.getId(), employee);
+        if (employee.getId() != null) {
+            return em.merge(employee);
+        }
+
+        em.persist(employee);
         return employee;
 	}
 

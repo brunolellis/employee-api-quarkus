@@ -4,14 +4,14 @@ import java.time.LocalDate;
 
 public class EmployeeResponse {
 
-	private String id;
+	private Long id;
 	private String firstName;
 	private String middleInitial;
 	private String lastName;
 	private LocalDate dateOfBirth;
 	private LocalDate dateOfEmployment;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -43,14 +43,14 @@ public class EmployeeResponse {
 	}
 
 	public static class Builder {
-		private String id;
+		private Long id;
 		private String firstName;
 		private String middleInitial;
 		private String lastName;
 		private LocalDate dateOfBirth;
 		private LocalDate dateOfEmployment;
 
-		public Builder id(final String id) {
+		public Builder id(final Long id) {
 			this.id = id;
 			return this;
 		}

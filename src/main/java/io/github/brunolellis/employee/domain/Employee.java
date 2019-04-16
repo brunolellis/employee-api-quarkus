@@ -4,56 +4,48 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-// import javax.persistence.Column;
-// import javax.persistence.Entity;
-// import javax.persistence.EnumType;
-// import javax.persistence.Enumerated;
-// import javax.persistence.GeneratedValue;
-// import javax.persistence.GenerationType;
-// import javax.persistence.Id;
-// import javax.persistence.Table;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-// @Entity
-// @Table(name = "EMPLOYEE")
+@Entity
+@Table(name = "EMPLOYEE")
 public class Employee {
 
-	// @Id
-	// @GeneratedValue(strategy = GenerationType.IDENTITY)
-	// @Column(name = "ID")
-	private String id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID")
+	private Long id;
 
-	// @Column(name = "FIRST_NAME", nullable = false)
+	@Column(name = "FIRST_NAME", nullable = false)
 	private String firstName;
 
-	// @Column(name = "MIDDLE_INITIAL", length = 1)
+	@Column(name = "MIDDLE_INITIAL", length = 1)
 	private String middleInitial;
 
-	// @Column(name = "LAST_NAME", nullable = false)
+	@Column(name = "LAST_NAME", nullable = false)
 	private String lastName;
 
-	// @Column(name = "DATE_OF_BIRTH", nullable = false)
+	@Column(name = "DATE_OF_BIRTH", nullable = false)
 	private LocalDate dateOfBirth;
 
-	// @Column(name = "DATE_OF_EMPLOYMENT", nullable = false)
+	@Column(name = "DATE_OF_EMPLOYMENT", nullable = false)
 	private LocalDate dateOfEmployment;
 
-	// @Enumerated(EnumType.STRING)
-	// @Column(name = "STATUS", nullable = false)
+	@Enumerated(EnumType.STRING)
+	@Column(name = "STATUS", nullable = false)
 	private EmployeeStatus status = EmployeeStatus.ACTIVE;
 
-	public Employee generateNewId() {
-		if (id == null) {
-			this.id = UUID.randomUUID().toString();
-		}
-
-		return this;
-	}
-
-	public void setId(final String id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 

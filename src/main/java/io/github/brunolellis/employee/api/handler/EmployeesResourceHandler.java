@@ -29,9 +29,10 @@ public class EmployeesResourceHandler {
 		this.service = service;
 	}
 
-	public EmployeeResponse findEmployeeById(final String id) {
+	public EmployeeResponse findEmployeeById(final Long id) {
 		final Employee employee = service.findById(id);
-		return convertToResponse(employee);
+		EmployeeResponse response = convertToResponse(employee);
+		return response;
 	}
 
 	public List<EmployeeResponse> findAllEmployees() {
@@ -47,12 +48,12 @@ public class EmployeesResourceHandler {
 		return convertToResponse(newEmployee);
 	}
 
-	public void update(final String id, @Valid final EmployeeRequest request) {
+	public void update(final Long id, @Valid final EmployeeRequest request) {
 		final Employee employee = convertToEmployee(request);
 		service.update(id, employee);
 	}
 
-	public void delete(final String id) {
+	public void delete(final Long id) {
 		service.delete(id);
 	}
 	
